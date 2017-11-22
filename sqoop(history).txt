@@ -1,0 +1,37 @@
+202  insert into employees values(111,'1989-08-01','abc','aaa','M','2010-01-11');
+  203  insert into employees values(112,'1989-09-01','bbb','sss','M','2010-01-12');
+  204  insert into employees values(113,'1989-07-01','ccc','xxx','M','2010-01-13');
+  205  insert into employees values(114,'1989-06-01','ddd','fff','M','2010-01-14');
+  206  insert into employees values(115,'1989-05-01','eee','zzz','M','2010-01-15');
+  207  insert into employees values(116,'1989-04-01','fff','rrr','M','2010-01-16');
+  208  insert into employees values(117,'1989-08-02','ggg','mmm','F','2010-01-11');
+  209  insert into employees values(118,'1989-08-03','hhh','nnn','F','2010-02-11');
+  210  insert into employees values(119,'1989-08-04','iii','ooo','F','2010-03-11');
+  211  insert into employees values(120,'1989-08-05','jjj','ppp','F','2010-04-11');
+  212  insert into employees values(121,'1989-08-06','kkk','ttt','F','2010-05-11');
+  213  insert into employees values(122,'1989-08-07','lll','uuu','F','2010-06-11');
+  214  sqoop list-databases --connect jdbc:mysql://quickstart.cloudera --username root --password cloudera
+  215  sqoop list-tables --connect jdbc:mysql://quickstart.cloudera/metastore --username root --password cloudera
+  216* sqoop list-tables --connect jdbc:mysql://quickstart.cloudera/r --username root --password cloudera
+  217  sqoop import --connect jdbc:mysql://quickstart.cloudera/rtrdbms --table employee --username root -P cloudera
+  218  sqoop import --connect jdbc:mysql://quickstart.cloudera/rtrdbms --table employees --username root -P cloudera
+  219  sqoop import --connect jdbc:mysql://quickstart.cloudera/rtrdbms --table employees --username root --password cloudera
+  220  hadoop fs -ls /user/cloudera/employees/
+  221* 
+  222  sqoop import --connect jdbc:mysql://quickstart.cloudera/rtrdbms --table employees_npk --username root --password cloudera
+  223  sqoop import --connect jdbc:mysql://quickstart.cloudera/rtrdbms --table employees_npk --username root --password cloudera -m 1
+  224  sqoop import --connect jdbc:mysql://quickstart.cloudera/rtrdbms --table employees_npk --username root --password cloudera --split-by emp_no --target-dir /user/cloudera/sqoop/import/data/employees_npk
+  225  hadoop fs -cat /user/cloudera/sqoop/import/data/employees_npk/part-m-*
+  226  sqoop import --connect jdbc:mysql://quickstart.cloudera/rtrdbms --query 'select emp_no,first_name,hire_date where emp_no > 118 and $CONDITIONS' employees_npk --username root --password cloudera --split-by emp_no --target-dir /user/cloudera/sqoop/import/data/employees_cols
+  227  sqoop import --connect jdbc:mysql://quickstart.cloudera/rtrdbms --query 'select emp_no,first_name,hire_date from employees_npk where emp_no > 118 and $CONDITIONS' employees_npk --username root --password cloudera --split-by emp_no --target-dir /user/cloudera/sqoop/import/data/employees_cols
+  228  sqoop import --connect jdbc:mysql://quickstart.cloudera/rtrdbms --query 'select emp_no,first_name,hire_date from employees_npk where emp_no > 118 and $CONDITIONS' --username root --password cloudera --split-by emp_no --target-dir /user/cloudera/sqoop/import/data/employees_cols
+  229  hadoop fs -cat /user/cloudera/sqoop/import/data/employees_cols/part-m-*
+  230  sqoop eval --connect jdbc:mysql://quickstart.cloudera/rtrdbms --username root --password cloudera --query ‘select * from employees limit 2’
+  231  sqoop eval --connect jdbc:mysql://quickstart.cloudera/rtrdbms --username root --password cloudera --query "select * from employees limit 2"
+  232  sqoop eval --connect jdbc:mysql://quickstart.cloudera/rtrdbms --username root --password cloudera -e "insert into employees values(550000,'1977-08-08','Mouse','Mickey','M','1999-04-12')"
+  233  sqoop export --connect jdbc:mysql://quickstart.cloudera/rtrdbms --username root --password cloudera --table employees_export  --staging-table employees_exp_stg --clear-staging-table -m 4 --export-dir /user/cloudera/sqoop/import/data/employees
+  234  sqoop export --connect jdbc:mysql://quickstart.cloudera/rtrdbms --username root --password cloudera --table employees_export  --staging-table employees_exp_stg --clear-staging-table -m 4 --export-dir /user/cloudera/employees
+  235  gedit /user/cloudera/employees/part-m-00003
+  236  sqoop export --connect jdbc:mysql://quickstart.cloudera/rtrdbms --username root --password cloudera --table employees_export --update-key emp_no --update-mode updateonly --export-dir /user/cloudera/employees
+  237  history
+[cloudera@quickstart ~]$ 
